@@ -37,6 +37,12 @@ export default {
     commit('SET_ACTIVE_PAGE_MUTATION', page)
   },
 
+  loadPagesFromFileImport ({commit, state}, payload) {
+    commit('SET_PAGE_ACTIVE_WIDGET_MUTATION', null)
+    commit('SET_ACTIVE_PAGE_MUTATION', null)
+    commit('UPDATE_PAGES_MUTATION', JSON.parse(payload))
+  },
+
   createPage ({commit, state}, payload) {
     // default values
     var item = {

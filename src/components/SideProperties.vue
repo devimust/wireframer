@@ -7,7 +7,7 @@
 
     <div v-if="containerOpen" class="row">
       <div class="col-sm">
-        <h2>pages <i class="add-page material-icons" @click="createPage">add_circle</i></h2>
+        <h2>pages <span data-tip="add new page"><i class="add-page material-icons" @click="createPage">add_circle</i></span></h2>
 
         <table class="page-table">
           <tr v-for="(page, index) in pages" :key="page.id">
@@ -145,7 +145,22 @@
         </div>
 
         <div class="bottom-holder">
-          <i v-if="activePage" class="material-icons" @click="exportCanvasToFile">save</i>
+          <div v-if="showImportFile" class="upload-json-file">
+            <p>import json file</p>
+            <input type="file" id="uploadJsonFile" @change="uploadJsonFile">
+          </div>
+
+          <span data-tip="export png">
+            <i v-if="activePage" class="material-icons" @click="exportCanvasToFile">save</i>
+          </span>
+
+          <span data-tip="export data">
+            <i class="material-icons vtooltip" @click="exportLocalstorageToJsonFile">file_download</i>
+          </span>
+
+          <span data-tip="import file">
+            <i class="material-icons" @click="showImportFile=!showImportFile">file_upload</i>
+          </span>
         </div>
 
         <!-- <div>
@@ -165,7 +180,8 @@
   export default {
     data () {
       return {
-        containerOpen: true
+        containerOpen: true,
+        showImportFile: false
       }
     },
 
@@ -272,6 +288,46 @@
           anchor.download = this.activePage.name + '.jpg'
           anchor.click()
         })
+      },
+
+      exportLocalstorageToJsonFile () {
+        const pagesObj = this.$store.getters.pages
+
+        const today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10){
+            dd='0'+dd;
+        }
+        if(mm<10){
+            mm='0'+mm;
+        }
+        const fileName = yyyy + '_' + mm + '_' + dd
+
+        var anchor = document.createElement('a')
+        anchor.href = 'data:application/json;charset=utf-8,'+ encodeURIComponent(JSON.stringify(pagesObj))
+        anchor.download = 'wireframer_' + fileName + '.json'
+        anchor.click()
+      },
+
+      uploadJsonFile (e) {
+        var files = e.target.files || e.dataTransfer.files;
+
+        if (!files.length || files.length != 1) {
+          return
+        }
+
+        const file = files[0]
+        var reader = new FileReader()
+        var vm = this;
+
+        reader.onload = (e) => {
+          vm.$store.dispatch('loadPagesFromFileImport', e.target.result)
+        }
+
+        reader.readAsText(file);
       }
     },
 
@@ -443,7 +499,7 @@
 
 <style lang="scss" scoped>
 
-  @import '../styles/_vars.scss';
+  @import '../styles/_main.scss';
 
   .container {
     position: fixed;
@@ -598,6 +654,14 @@
       position: fixed;
       bottom: 5px;
       cursor: pointer;
+
+      .upload-json-file {
+        margin-bottom: 15px;
+
+        p {
+          margin-bottom: 5px;
+        }
+      }
     }
   }
 

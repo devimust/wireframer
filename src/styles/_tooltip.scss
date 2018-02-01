@@ -1,0 +1,49 @@
+/*
+    <span data-tip="this is a tooltip message">
+      <i class="material-icons">save</i>
+    </span>
+*/
+
+[data-tip] {
+  position:relative;
+}
+[data-tip]:before {
+  content:'';
+  /* hides the tooltip when not hovered */
+  display:none;
+  content:'';
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #1a1a1a;
+  position:absolute;
+  top:-10px;
+  left:35px;
+  z-index:1002;
+  font-size:0;
+  line-height:0;
+  width:0;
+  height:0;
+}
+[data-tip]:after {
+  display:none;
+  content:attr(data-tip);
+  position:absolute;
+  top:-18px;
+  left:40px;
+  padding:5px 8px;
+  background:#1a1a1a;
+  color:white;
+  z-index:1003;
+  font-size: 16px;
+  height:25px;
+  line-height:16px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space:nowrap;
+  word-wrap:normal;
+}
+[data-tip]:hover:before,
+[data-tip]:hover:after {
+  display:block;
+}
