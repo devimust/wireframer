@@ -26,7 +26,7 @@ Copy `index.html` and the `dist` folder to a webserver.
 
 ## Todo
 
-- [ ] Add more widgets: paragraph, table, navigation
+- [ ] Add more widgets: paragraph, table, navigation, tabs
 - [ ] Deselect widget when clicking outside canvas
 - [ ] Serve icons locally
 - [ ] Download localstorage json data
