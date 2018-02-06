@@ -48,8 +48,8 @@ export default {
     var item = {
       id: 0,
       name: 'New page',
-      w: 400,
-      h: 400,
+      w: 650,
+      h: 550,
       widgets: []
     }
 
