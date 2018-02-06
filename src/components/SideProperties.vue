@@ -89,11 +89,11 @@
             <div>
               <label>heading size</label>
             </div>
-            <i v-if="activeWidget.f < 50" class="material-icons float-left" @click="activeWidget.f += 5">add</i>
-            <i v-if="activeWidget.f > 20" class="material-icons float-left" @click="activeWidget.f -= 5">remove</i>
+            <i v-if="activeWidget.f < 50" class="material-icons float-left" @click="activeWidget.f=parseInt(activeWidget.f)+5">add</i>
+            <i v-if="activeWidget.f > 20" class="material-icons float-left" @click="activeWidget.f=parseInt(activeWidget.f)-5">remove</i>
           </div>
 
-          <!-- iamge url -->
+          <!-- image url -->
           <div v-if="showImageUrl" class="form-group">
             <label for="imageURL">image url</label>
             <input type="text" class="form-control" id="imageURL" placeholder="http://"
