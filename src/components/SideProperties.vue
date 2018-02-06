@@ -150,18 +150,22 @@
             <input type="file" id="uploadJsonFile" @change="uploadJsonFile">
           </div>
 
-          <span data-tip="export png">
-            <i v-if="activePage" class="material-icons" @click="exportCanvasToFile">save</i>
-          </span>
+          <div>
+            <span data-tip="export png">
+              <i v-if="activePage" class="material-icons" @click="exportCanvasToFile">save</i>
+            </span>
 
-          <span data-tip="export data">
-            <i class="material-icons vtooltip" @click="exportLocalstorageToJsonFile">file_download</i>
-          </span>
+            <span data-tip="export data">
+              <i class="material-icons vtooltip" @click="exportLocalstorageToJsonFile">file_download</i>
+            </span>
 
-          <span data-tip="import file">
-            <i class="material-icons" @click="showImportFile=!showImportFile">file_upload</i>
-          </span>
+            <span data-tip="import file">
+              <i class="material-icons" @click="showImportFile=!showImportFile">file_upload</i>
+            </span>
+          </div>
         </div>
+
+        <div class="app-version">v {{ version }}</div>
 
         <!-- <div>
           <pre style="color:white;">{{ activeWidget }}</pre>
@@ -176,12 +180,14 @@
   import VueEditable from '../helpers/vue-editable.vue'
   import VueColorPicker from '../helpers/vue-color-picker.vue'
   import html2canvas from 'html2canvas'
+  import { version } from '../../package.json'
 
   export default {
     data () {
       return {
         containerOpen: true,
-        showImportFile: false
+        showImportFile: false,
+        version: version
       }
     },
 
@@ -662,6 +668,12 @@
           margin-bottom: 5px;
         }
       }
+    }
+
+    .app-version {
+      position: fixed;
+      bottom: 5px;
+      right: 10px;
     }
   }
 
