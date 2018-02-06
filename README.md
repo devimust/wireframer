@@ -30,7 +30,10 @@ Copy `index.html` and the `dist` folder to a webserver.
 - [ ] Deselect widget when clicking outside canvas
 - [ ] Serve icons locally
 - [ ] Download localstorage json data
-- [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase) 
+- [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase)
+- [ ] Group components / objects via multi-select
+- [ ] Copy and paste components
+- [ ] Custom components (grouped)
 
 
 ## Build Setup
