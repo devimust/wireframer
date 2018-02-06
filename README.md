@@ -33,6 +33,7 @@ Copy `index.html` and the `dist` folder to a webserver.
 - [ ] Group components / objects via multi-select
 - [ ] Copy and paste components
 - [ ] Custom components (grouped)
+- [ ] Control actions via keyboard shortcuts (e.g. delete widget)
 - [ ] Serve icons locally
 
 ## Build Setup
