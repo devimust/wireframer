@@ -1,13 +1,13 @@
 {
   "name": "wireframer",
   "description": "A wireframing / ui tool for mocking web-based applications.",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Rudi Olckers <d3vimust@gmail.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules && bump --patch"
   },
   "dependencies": {
     "bootstrap": "^4.0.0",
@@ -31,6 +31,7 @@
     "node-sass": "^4.7.2",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.1",
+    "version-bump-prompt": "^4.0.0",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
