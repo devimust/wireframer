@@ -28,13 +28,12 @@ Copy `index.html` and the `dist` folder to a webserver.
 
 - [ ] Add more widgets: paragraph, table, navigation, tabs
 - [x] Deselect widget when clicking outside canvas
-- [ ] Serve icons locally
-- [ ] Download localstorage json data
+- [x] Download localstorage json data
 - [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase)
 - [ ] Group components / objects via multi-select
 - [ ] Copy and paste components
 - [ ] Custom components (grouped)
-
+- [ ] Serve icons locally
 
 ## Build Setup
 
