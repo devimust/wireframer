@@ -13,7 +13,6 @@
     @resizestop="resizestop"
     @dragstop="dragstop"
     @activated="activated"
-    @deactivated="deactivated"
     :parent="true"
   >
     <div class="outer">

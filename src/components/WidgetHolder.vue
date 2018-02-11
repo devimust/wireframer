@@ -1,11 +1,8 @@
 <template>
-  <div>
-    <div class="widget-outer"
-      @click.prevent="clickOuterContainer">
-    </div>
 
-    <vue-draggable-resizable id="widget-holder" v-if="activePage"
-      class="widget-holder-container"
+
+    <div id="widget-holder" v-if="activePage"
+      class="widget-holder-container widget-holder"
       :draggable=false
       :x=0
       :y=0
@@ -21,20 +18,33 @@
       @activated="clickactivated"
       @deactivated="clickdeactivated"
     >
-      <div class="widget-holder">
-        <widget-button class="draggable-item"
+      {{ widgets }}
+      <component class="draggable-item"
+        v-for="(widget, index) in widgets"
+        :key="index"
+        :widget="widget"
+        :is="widget.name"
+      >
+      </component>
+
+      <!-- <div id="btn1" class="btnx">a</div>
+      <div id="btn2" class="btnx">b</div> -->
+
+      <!-- <div class="widget-holder" id="holder1"> -->
+        <!-- <widget-button class="draggable-item"
           v-for="widget in widgets('button')"
           :class="{selected: activeWidget && widget.id == activeWidget.id}"
           :widget="widget" :key="activePage.id + '-' + widget.id"
+          @click="clickme"
         ></widget-button>
 
         <widget-checkbox class="draggable-item"
           v-for="widget in widgets('checkbox')"
           :class="{selected: activeWidget && widget.id == activeWidget.id}"
           :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-checkbox>
+        ></widget-checkbox> -->
 
-        <widget-dropdown class="draggable-item"
+        <!-- <widget-dropdown class="draggable-item"
           v-for="widget in widgets('dropdown')"
           :class="{selected: activeWidget && widget.id == activeWidget.id}"
           :widget="widget" :key="activePage.id + '-' + widget.id"
@@ -104,17 +114,18 @@
           v-for="widget in widgets('mobile')"
           :class="{selected: activeWidget && widget.id == activeWidget.id}"
           :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-mobile>
-      </div>
+        ></widget-mobile> -->
+      <!-- </div> -->
 
       <div class="canvas-dimensions">{{ displayCanvasWidth }} x {{ displayCanvasHeight }}</div>
 
       <div class="canvas-page-name">{{ activePage.name }}</div>
-    </vue-draggable-resizable>
-  </div>
+    </div>
 </template>
 
 <script>
+
+  import dragNdrop from 'npm-dragndrop'
 
   import VueDraggableResizable from '../helpers/vue-draggable-resizable'
   import WidgetButton from './widgets/WidgetButton.vue'
@@ -142,7 +153,84 @@
       }
     },
 
+    mounted () {
+      console.log('in here...')
+
+      // console.log(this.$el)
+      // dragNdrop({
+      //   // element to be dragged (DOM element)
+      //   element: document.getElementById('main-btn')
+      // })
+
+      // var vm = this
+
+      var elementList = document.querySelectorAll('.draggable-item');
+
+      // Iterate through each element in the array
+      for (var i = 0; i < elementList.length; i++) {
+        //Create the MouseDown, MouseUp, and MouseMove events for the element
+        var ele = elementList[i];
+        console.log(ele)
+
+//         dragNdrop({
+//         // element to be dragged (DOM element)
+//           element: ele,
+//           customStyles: false,
+//           useTransform: false,
+//           // element: this.$el,
+//           // constraints (false / 'x' / 'y' / DOM element)
+//           constraints: document.getElementById('widget-holder'),
+//           callback: function(event) {
+//             console.log(event)
+
+
+//             this.widget.y = y
+//         this.widget.x = x
+
+// event.element.style.left = "200px"
+// // div.style.top = "200px";
+// // div.style.left = "200px";
+
+
+//             // var parentLeft = document.getElementById('widget-holder').getBoundingClientRect().left
+//             // var childLeft = event.element.getBoundingClientRect().left
+//             // var widgetLeft = childLeft - parentLeft
+//             // console.log('left: ', widgetLeft);
+//           }
+//         })
+          // ele.onmousedown = slide_MouseDown;
+          // ele.onmouseup = slide_MouseUp;
+          // ele.onmousemove = slide_MouseMove;
+
+          // //Create the Click event just to see if it's working
+          // ele.onclick = slide_MouseClick;
+      }
+
+
+      // dragNdrop({
+      // // element to be dragged (DOM element)
+      //   element: document.getElementById('btn1'),
+      //   customStyles: false,
+      //   // element: this.$el,
+      //   // constraints (false / 'x' / 'y' / DOM element)
+      //   constraints: document.getElementById('widget-holder'),
+      //   callback: function(event) {
+      //     console.log(event)
+      //     var parentLeft = document.getElementById('widget-holder').getBoundingClientRect().left
+      //     var childLeft = event.element.getBoundingClientRect().left
+      //     var widgetLeft = childLeft - parentLeft
+      //     console.log('left: ', widgetLeft);
+      //   }
+      // })
+    },
+
+
     methods: {
+
+      clickme () {
+        console.log('hey')
+      },
+
       updateWidgetDrag (item) {
         this.$store.dispatch('updateItem', item)
       },
@@ -179,21 +267,7 @@
         // console.log('WidgetHolder: clickdeactivated()')
       },
 
-      widgets (type) {
-        var widgets = []
 
-        if (this.activePage) {
-          for (var i=0; i<this.activePage.widgets.length; i++) {
-            const widget = this.activePage.widgets[i]
-
-            if (widget.type == type) {
-              widgets.push(this.activePage.widgets[i])
-            }
-          }
-        }
-
-        return widgets
-      },
 
       clickOuterContainer () {
         this.$store.dispatch('setActiveWidget', null)
@@ -201,6 +275,25 @@
     },
 
     computed: {
+
+widgets () {
+        var widgets = []
+
+        if (this.activePage) {
+          for (var i=0; i<this.activePage.widgets.length; i++) {
+            const widget = this.activePage.widgets[i]
+
+            widget.name="widget-button"
+console.log('added')
+            // if (widget.type == type) {
+              widgets.push(this.activePage.widgets[i])
+            // }
+          }
+        }
+
+        return widgets
+      },
+
       activePage () {
         const page = this.$store.getters.activePage
 
@@ -248,7 +341,46 @@
 
 <style lang=scss scoped>
 
-  .widget-outer {
+  .widget-holder {
+    margin: 50px 0 0 50px;
+    border: 1px solid red;
+    position: relative;
+    display: block;
+    width: 600px;
+    height: 600px;
+    /* background: white url(../assets/paper.png);
+    -webkit-box-shadow: 0 0 10px #bebebe;
+    -moz-box-shadow: 0 0 10px #bebebe;
+    box-shadow: 0 0 10px #bebebe;
+    width: 100%;
+    height: 100%;
+    position: relative; */
+
+    /* .draggable-item {
+      position: absolute;
+      border: 1px dotted green;
+    } */
+  }
+
+  /* .btnx {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+  }
+
+  #btn1 {
+    background-color: green;
+    left: 200px;
+    top: 200px;
+  }
+
+  #btn2 {
+    background-color: red;
+    left: 50px;
+    top: 50px;
+  } */
+
+  .xwidget-outer {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -258,14 +390,14 @@
     padding: 0;
   }
 
-  .widget-holder-container {
+  .xwidget-holder-container {
     margin: 0 auto;
     width: 600px;
     height: 800px;
     position: relative !important;
     margin-top: 40px;
 
-    .widget-holder {
+    .xwidget-holder {
       border: 1px solid #d1d1d1;
       background: white url(../assets/paper.png);
       -webkit-box-shadow: 0 0 10px #bebebe;
@@ -273,7 +405,7 @@
       box-shadow: 0 0 10px #bebebe;
       width: 100%;
       height: 100%;
-      position: absolute;
+      position: relative;
     }
 
     .canvas-dimensions {

@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="container-fluid">
-    <app-side-selector></app-side-selector>
+    <!-- <app-side-selector></app-side-selector> -->
     <app-widget-holder></app-widget-holder>
-    <app-side-properties></app-side-properties>
+    <!-- <app-side-properties></app-side-properties> -->
   </div>
 </template>
 
