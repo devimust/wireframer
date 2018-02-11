@@ -34,6 +34,23 @@
           </tr>
         </table>
 
+        <div v-if="activePage" class="page-properties">
+          <h2>canvas</h2>
+
+          <!-- dimensions -->
+          <div class="page-actions form-group">
+            <div>
+              <input type="text" class="form-control" v-model="activePage.w">
+            </div>
+            <label> by </label>
+            <div>
+              <input type="text" class="form-control" v-model="activePage.h">
+            </div>
+          </div>
+
+
+        </div>
+
         <div v-if="activeWidget" class="widget-properties">
           <h2>properties</h2>
 
@@ -473,7 +490,19 @@
       },
       'activeWidget.h': function (val, oldVal) {
         this.$store.dispatch('updateWidgetProperties', this.activeWidget)
-      }
+      },
+      'activePage.w': function (val, oldVal) {
+         this.$store.dispatch('updatePageCanvasSize', {
+          width: this.activePage.w,
+          height: this.activePage.h
+        });
+      },
+      'activePage.h': function (val, oldVal) {
+        this.$store.dispatch('updatePageCanvasSize', {
+          width: this.activePage.w,
+          height: this.activePage.h
+        });
+      },
     },
 
     created () {
@@ -567,6 +596,25 @@
       i {
         cursor: pointer;
         font-size: $small-icon-size;
+      }
+    }
+
+    .page-properties {
+      .page-actions {
+        div {
+          background-color: red;
+          display: inline-block;
+          width: 40px;
+          padding: 0;
+        }
+
+        input[type="text"] {
+          display: inline-block;
+        }
+
+        label {
+          margin: 0 10px 0 10px;
+        }
       }
     }
 
