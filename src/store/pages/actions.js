@@ -9,8 +9,8 @@ export default {
       pages = [{
         id: 1,
         name: 'New page',
-        w: 400,
-        h: 400,
+        w: 650,
+        h: 550,
         widgets: []
       }]
 

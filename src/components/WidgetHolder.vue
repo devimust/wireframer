@@ -1,122 +1,26 @@
 <template>
-  <div>
-    <div class="widget-outer"
-      @click.prevent="clickOuterContainer">
-    </div>
-
-    <vue-draggable-resizable id="widget-holder" v-if="activePage"
-      class="widget-holder-container"
-      :draggable=false
-      :x=0
-      :y=0
-      :w=containerCanvasWidth
-      :h=containerCanvasHeight
-      :minw="400"
-      :minh="400"
-      :maxw="4000"
-      :maxh="4000"
-      :handles="['mr', 'bm']"
-      @resizestop="canvasResizeStop"
-      @resizing="canvasResizing"
-      @activated="clickactivated"
-      @deactivated="clickdeactivated"
+    <div v-if="activePage" class="widget-holder bg-blocks"
+      @click="setActiveWidget(null)"
+      :style="styleDimensions"
     >
-      <div class="widget-holder">
-        <widget-button class="draggable-item"
-          v-for="widget in widgets('button')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-button>
+      <component class="widget-resize-drag"
+        v-for="(widget, index) in widgets"
+        :key="index"
+        :widget="widget"
+        :is="'widget-'+widget.type"
+        :class="{selected: activeWidget && widget.id == activeWidget.id}"
+        @click.native.stop="setActiveWidget(widget)"
+      >
+      </component>
 
-        <widget-checkbox class="draggable-item"
-          v-for="widget in widgets('checkbox')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-checkbox>
-
-        <widget-dropdown class="draggable-item"
-          v-for="widget in widgets('dropdown')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-dropdown>
-
-        <widget-scrollbar class="draggable-item"
-          v-for="widget in widgets('scrollbar')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-scrollbar>
-
-        <widget-radio class="draggable-item"
-          v-for="widget in widgets('radio')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-radio>
-
-        <widget-list class="draggable-item"
-          v-for="widget in widgets('list')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-list>
-
-        <widget-input class="draggable-item"
-          v-for="widget in widgets('input')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-input>
-
-        <widget-hr class="draggable-item"
-          v-for="widget in widgets('hr')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-hr>
-
-        <widget-heading class="draggable-item"
-          v-for="widget in widgets('heading')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-heading>
-
-        <widget-label class="draggable-item"
-          v-for="widget in widgets('label')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-label>
-
-        <widget-image class="draggable-item"
-          v-for="widget in widgets('image')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-image>
-
-        <widget-shape class="draggable-item"
-          v-for="widget in widgets('shape')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-shape>
-
-        <widget-browser class="draggable-item"
-            v-for="widget in widgets('browser')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-browser>
-
-        <widget-mobile class="draggable-item"
-          v-for="widget in widgets('mobile')"
-          :class="{selected: activeWidget && widget.id == activeWidget.id}"
-          :widget="widget" :key="activePage.id + '-' + widget.id"
-        ></widget-mobile>
-      </div>
-
-      <div class="canvas-dimensions">{{ displayCanvasWidth }} x {{ displayCanvasHeight }}</div>
+      <div class="canvas-dimensions">{{ activePage.w }} x {{ activePage.h }}</div>
 
       <div class="canvas-page-name">{{ activePage.name }}</div>
-    </vue-draggable-resizable>
-  </div>
+    </div>
 </template>
 
 <script>
 
-  import VueDraggableResizable from '../helpers/vue-draggable-resizable'
   import WidgetButton from './widgets/WidgetButton.vue'
   import WidgetCheckbox from './widgets/WidgetCheckbox.vue'
   import WidgetDropdown from './widgets/WidgetDropdown.vue'
@@ -133,74 +37,35 @@
   import WidgetMobile from './widgets/WidgetMobile.vue'
 
   export default {
-    data () {
-      return {
-        displayCanvasWidth: 0,
-        displayCanvasHeight: 0,
-        containerCanvasWidth: 400,
-        containerCanvasHeight: 400
-      }
+    methods: {
+      setActiveWidget (widget) {
+        this.$store.dispatch('setActiveWidget', widget)
+      },
     },
 
-    methods: {
-      updateWidgetDrag (item) {
-        this.$store.dispatch('updateItem', item)
-      },
-
-      updateWidgetResize (data) {
-        this.items.find( (item) => {
-          if (item.id === data.id) {
-            item.width = data.width;
-            item.height = data.height;
-          }
-        });
-      },
-
-      canvasResizing (x, y, w, h) {
-        this.displayCanvasWidth = w
-        this.displayCanvasHeight = h
-      },
-
-      canvasResizeStop (x, y, w, h) {
-        this.$store.dispatch('updatePageCanvasSize', {
-          width: w,
-          height: h
-        });
-
-        this.displayCanvasWidth = w
-        this.displayCanvasHeight = h
-      },
-
-      clickactivated () {
-        // console.log('WidgetHolder: clickactivated()')
-      },
-
-      clickdeactivated () {
-        // console.log('WidgetHolder: clickdeactivated()')
-      },
-
-      widgets (type) {
+    computed: {
+      widgets () {
         var widgets = []
 
-        if (this.activePage) {
-          for (var i=0; i<this.activePage.widgets.length; i++) {
-            const widget = this.activePage.widgets[i]
+        if (!this.activePage) {
+          return widgets
+        }
 
-            if (widget.type == type) {
-              widgets.push(this.activePage.widgets[i])
-            }
-          }
+        for (var i=0; i<this.activePage.widgets.length; i++) {
+          widgets.push(this.activePage.widgets[i])
         }
 
         return widgets
       },
 
-      clickOuterContainer () {
-        this.$store.dispatch('setActiveWidget', null)
-      }
-    },
+      styleDimensions () {
+        const obj = {
+          width: this.activePage.w + 'px',
+          height: this.activePage.h + 'px'
+        }
+        return obj
+      },
 
-    computed: {
       activePage () {
         const page = this.$store.getters.activePage
 
@@ -239,8 +104,7 @@
       'widget-image': WidgetImage,
       'widget-shape': WidgetShape,
       'widget-browser': WidgetBrowser,
-      'widget-mobile': WidgetMobile,
-      'vue-draggable-resizable': VueDraggableResizable
+      'widget-mobile': WidgetMobile
     }
   }
 
@@ -248,32 +112,31 @@
 
 <style lang=scss scoped>
 
-  .widget-outer {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0;
+  @import '../styles/_main.scss';
+
+  .bg-blocks {
+    background-color: $canvas-background-color;
+    background-image: linear-gradient(rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
   }
 
-  .widget-holder-container {
-    margin: 0 auto;
+  .widget-holder {
+    position: relative;
+    display: block;
     width: 600px;
-    height: 800px;
-    position: relative !important;
-    margin-top: 40px;
+    height: 600px;
+    margin: 0 auto;
+    margin-top: 50px;
+    -webkit-box-shadow: 0 0 10px #bebebe;
+    -moz-box-shadow: 0 0 10px #bebebe;
+    box-shadow: 0 0 10px #bebebe;
 
-    .widget-holder {
-      border: 1px solid #d1d1d1;
-      background: white url(../assets/paper.png);
-      -webkit-box-shadow: 0 0 10px #bebebe;
-      -moz-box-shadow: 0 0 10px #bebebe;
-      box-shadow: 0 0 10px #bebebe;
-      width: 100%;
-      height: 100%;
+    .widget-resize-drag {
       position: absolute;
+      box-sizing: border-box;
+      left: 0;
+      top: 0;
     }
 
     .canvas-dimensions {
@@ -295,7 +158,7 @@
     }
 
     .selected {
-      border: 4px dotted grey;
+      border: 4px dotted $active-widget-border-color;
     }
   }
 
