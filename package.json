@@ -1,7 +1,7 @@
 {
   "name": "wireframer",
   "description": "A wireframing / ui tool for mocking web-based applications.",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "author": "Rudi Olckers <d3vimust@gmail.com>",
   "license": "MIT",
   "private": true,

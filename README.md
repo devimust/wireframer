@@ -33,7 +33,7 @@ Copy `index.html` and the `dist` folder to a webserver.
 - [ ] Position widgets relative to other widgets (middle, equal size, etc.)
 - [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase)
 - [ ] Group components / objects via multi-select
-- [ ] Copy and paste components
+- [x] Clone components
 - [ ] Custom components (grouped)
 - [ ] Control actions via keyboard shortcuts (e.g. delete widget, undo)
 - [ ] Serve icons locally

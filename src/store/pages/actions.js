@@ -148,6 +148,31 @@ export default {
     commit('SET_PAGE_WIDGET_PROPERTIES_MUTATION', payload)
   },
 
+  cloneWidget ({commit, state}, payload) {
+    if (!state.activePage) {
+      return
+    }
+
+    var widget = JSON.parse(JSON.stringify(payload))
+
+    // find max id
+    var maxId = 0
+    for (var i=0; i<state.activePage.widgets.length; i++) {
+      if (state.activePage.widgets[i].id > maxId) {
+        maxId = state.activePage.widgets[i].id
+      }
+    }
+
+    // merge payload with default widget properties
+    Object.assign(widget, {
+      id: maxId + 1,
+      x: 10,
+      y: 10
+    })
+
+    commit('CREATE_WIDGET_MUTATION', widget)
+  },
+
   deleteWidget ({commit, state}) {
     commit('DELETE_PAGE_WIDGET_MUTATION')
   }
