@@ -41,7 +41,7 @@
             <i class="material-icons float-left" @click="sendWidget('back')">flip_to_back</i>
             <i class="material-icons float-left" @click="sendWidget('front')">flip_to_front</i>
             <i class="material-icons float-left" @click="cloneWidget">content_copy</i>
-            <i v-if="showJustification" class="material-icons float-left rotate-90" @click="alignWidget('center')">vertical_align_center</i>
+            <i class="material-icons float-left rotate-90" @click="alignWidget('center')">vertical_align_center</i>
             <i v-if="showJustification" class="material-icons float-left" @click="justifyWidget('left')">format_align_left</i>
             <i v-if="showJustification" class="material-icons float-left" @click="justifyWidget('center')">format_align_center</i>
             <i v-if="showJustification" class="material-icons float-left" @click="justifyWidget('right')">format_align_right</i>
