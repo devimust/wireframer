@@ -15,6 +15,7 @@ Wireframer is self-hosted Javascript application written in [Vue.js](https://vue
 - [Vue.js (v2)](https://vuejs.org/)
 - [Vuex](https://vuex.vuejs.org/en/intro.html)
 - [Bootstrap 4](https://getbootstrap.com/)
+- [interact.js](http://interactjs.io/)
 - [Material Design icons by Google](https://github.com/google/material-design-icons/)
 - [html2canvas](https://github.com/niklasvh/html2canvas)
 
@@ -27,11 +28,15 @@ Copy `index.html` and the `dist` folder to a webserver.
 ## Todo
 
 - [ ] Add more widgets: paragraph, table, navigation, tabs
-- [ ] Deselect widget when clicking outside canvas
+- [x] Deselect widget when clicking outside canvas
+- [x] Download localstorage json data
+- [ ] Position widgets relative to other widgets (middle, equal size, etc.)
+- [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase)
+- [ ] Group components / objects via multi-select
+- [ ] Copy and paste components
+- [ ] Custom components (grouped)
+- [ ] Control actions via keyboard shortcuts (e.g. delete widget, undo)
 - [ ] Serve icons locally
-- [ ] Download localstorage json data
-- [ ] Ability to sync localstorage to and from a central storage engine (e.g. Firebase) 
-
 
 ## Build Setup
 
