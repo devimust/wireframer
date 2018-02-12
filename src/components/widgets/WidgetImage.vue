@@ -1,19 +1,8 @@
 <template>
-  <vue-draggable-resizable
-    :x=widget.x
-    :y=widget.y
-    :w=widget.w
-    :h=widget.h
-    :z=widget.z
+  <vue-interactjs
+    :widget=widget
     :minw="100"
     :minh="30"
-    :maxw="800"
-    :maxh="800"
-    :grid=[10,10]
-    @resizestop="resizestop"
-    @dragstop="dragstop"
-    @activated="activated"
-    :parent="true"
   >
     <div class="outer">
       <div class="inner"
@@ -21,35 +10,15 @@
         :class="{'image-placeholder': widget.l == ''}"
       ></div>
     </div>
-  </vue-draggable-resizable>
+  </vue-interactjs>
 </template>
 
 <script>
 
-  import VueDraggableResizable from '../../helpers/vue-draggable-resizable'
+  import VueInteractjs from '../../helpers/vue-interactjs'
 
   export default {
     props: [ 'widget' ],
-
-    methods: {
-      activated: function(e) {
-        this.$store.dispatch('setActiveWidget', this.widget)
-      },
-      resizestop: function(x, y, w, h) {
-        this.widget.y = y
-        this.widget.x = x
-        this.widget.w = w
-        this.widget.h = h
-
-        this.$store.dispatch('updateWidgetDimensions', this.widget)
-      },
-      dragstop: function(x, y) {
-        this.widget.y = y
-        this.widget.x = x
-
-        this.$store.dispatch('updateWidgetDimensions', this.widget)
-      }
-    },
 
     computed: {
       imageStyle: function () {
@@ -73,22 +42,22 @@
     },
 
     components: {
-      'vue-draggable-resizable': VueDraggableResizable
+      'vue-interactjs': VueInteractjs
     }
   }
 
 </script>
 
-<style scoped>
+<style lang=scss scoped>
 
   .outer {
     width: 100%;
     height: 100%;
-  }
 
-  .inner {
-    width: 100%;
-    height: 100%;
+    .inner {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   /*

@@ -305,7 +305,7 @@
         }
 
         // @link https://stackoverflow.com/questions/31656689/how-to-save-img-to-users-local-computer-using-html2canvas
-        html2canvas(document.querySelector("#widget-holder")).then(canvas => {
+        html2canvas(document.querySelector(".widget-holder")).then(canvas => {
           var anchor = document.createElement('a')
           anchor.href = canvas.toDataURL("image/jpeg").replace("image/jpeg", "image/octet-stream")
           anchor.download = this.activePage.name + '.jpg'

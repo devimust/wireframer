@@ -124,8 +124,6 @@
 
     methods: {
       createWidget (type) {
-        // this.$store.dispatch('createWidget', type)
-
         var widget = {
           type: type
         }

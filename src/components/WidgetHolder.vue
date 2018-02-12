@@ -7,7 +7,7 @@
         v-for="(widget, index) in widgets"
         :key="index"
         :widget="widget"
-        :is="widget.name"
+        :is="'widget-'+widget.type"
         :class="{selected: activeWidget && widget.id == activeWidget.id}"
         @click.native.stop="setActiveWidget(widget)"
       >
@@ -47,16 +47,12 @@
       widgets () {
         var widgets = []
 
-        if (this.activePage) {
-          for (var i=0; i<this.activePage.widgets.length; i++) {
-            const widget = this.activePage.widgets[i]
+        if (!this.activePage) {
+          return widgets
+        }
 
-            widget.name="widget-button"
-            console.log('added')
-            // if (widget.type == type) {
-            widgets.push(this.activePage.widgets[i])
-            // }
-          }
+        for (var i=0; i<this.activePage.widgets.length; i++) {
+          widgets.push(this.activePage.widgets[i])
         }
 
         return widgets
@@ -162,7 +158,7 @@
     }
 
     .selected {
-      border: 4px dotted white;
+      border: 4px dotted $active-widget-border-color;
     }
   }
 

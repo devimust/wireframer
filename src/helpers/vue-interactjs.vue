@@ -1,15 +1,11 @@
 <template>
-  <div class="madrag"
+  <div
     :style="styleDimensions(widget)"
     :data-x="widget.x"
     :data-y="widget.y"
     :data-w="widget.w"
     :data-h="widget.h"
   >
-
-    <!-- {{ widget }} -->
-
-    <!-- {{minw}}x{{minh}} - {{maxw}}x{{maxh}} -->
     <slot></slot>
   </div>
 </template>
@@ -153,14 +149,11 @@
           top: 0,
           width: widget.w + 'px',
           height: widget.h + 'px',
-          transform: 'translate(' + widget.x + 'px, ' + widget.y + 'px)'
+          transform: 'translate(' + widget.x + 'px, ' + widget.y + 'px)',
+          zIndex: widget.z
         }
         return obj
-      },
+      }
     }
   }
 </script>
-
-<style scoped>
-
-</style>
