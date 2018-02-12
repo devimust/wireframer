@@ -1,8 +1,8 @@
 <template>
   <vue-interactjs
     :widget=widget
-    :minw="100"
-    :minh="30"
+    :minw="10"
+    :minh="10"
   >
     <div class="outer">
       <div class="inner"

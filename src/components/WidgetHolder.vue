@@ -21,6 +21,8 @@
 
 <script>
 
+  import interact from 'interactjs'
+
   import WidgetButton from './widgets/WidgetButton.vue'
   import WidgetCheckbox from './widgets/WidgetCheckbox.vue'
   import WidgetDropdown from './widgets/WidgetDropdown.vue'
@@ -41,6 +43,56 @@
       setActiveWidget (widget) {
         this.$store.dispatch('setActiveWidget', widget)
       },
+    },
+
+    mounted () {
+      const vm = this
+
+      window.addEventListener("keypress", function(e) {
+        switch (e.keyCode) {
+          case 127 : vm.$store.dispatch('deleteWidget')
+          break;
+        }
+      })
+
+      interact('.widget-holder')
+        .resizable({
+          // resize from all edges and corners
+          edges: { left: false, right: true, bottom: true, top: false },
+
+          inertia: true,
+        })
+        .on('resizemove', function (event) {
+          var target = event.target,
+              x = (parseFloat(target.getAttribute('data-x')) || 0),
+              y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+          // update the element's style
+          target.style.width  = event.rect.width + 'px';
+          target.style.height = event.rect.height + 'px';
+
+          // translate when resizing from top or left edges
+          x += event.deltaRect.left;
+          y += event.deltaRect.top;
+
+          target.style.webkitTransform = target.style.transform =
+              'translate(' + x + 'px,' + y + 'px)';
+
+          target.setAttribute('data-x', x);
+          target.setAttribute('data-y', y);
+          target.setAttribute('data-w', Math.round(event.rect.width));
+          target.setAttribute('data-h', Math.round(event.rect.height));
+        })
+        .on('resizeend', function (event) {
+          var target = event.target,
+              w = (parseFloat(target.getAttribute('data-w')) || 0),
+              h = (parseFloat(target.getAttribute('data-h')) || 0);
+
+          vm.$store.dispatch('updatePageCanvasSize', {
+            width: w,
+            height: h
+          })
+        })
     },
 
     computed: {
