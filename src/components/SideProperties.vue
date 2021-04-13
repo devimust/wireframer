@@ -182,7 +182,8 @@
   import VueEditable from '../helpers/vue-editable.vue'
   import VueColorPicker from '../helpers/vue-color-picker.vue'
   import html2canvas from 'html2canvas'
-  import { version } from '../../package.json'
+  import packageJson from '../../package.json'
+  const { version } = packageJson
 
   export default {
     data () {
