@@ -9,6 +9,11 @@ Wireframer is self-hosted Javascript application written in [Vue.js](https://vue
 
 ![alt text](https://github.com/devimust/wireframer/raw/master/screenshots/screenshot1.png "Screenshot 1")
 
+## Requirements
+
+- Node.js 16+ and Yarn 1.x
+- Modern browser (tested on evergreen Chrome/Firefox)
+
 
 ## Dependencies
 
@@ -44,16 +49,20 @@ I welcome contributions - please get in touch with me before attempting larger c
 
 ``` bash
 # install dependencies
-yarn
+corepack prepare yarn@1.22.22 --activate
+corepack yarn --version  # should show 1.22.22
+corepack yarn
 
 # serve with hot reload at localhost:8080
-yarn dev
+corepack yarn dev
 
 # build for production with minification
-yarn build
+corepack yarn build
 #or 
-yarn release
+corepack yarn release
 ```
+
+If you see odd `yarn` errors, check that your shell is using the Corepack-provided binary (e.g. `type -a yarn`) or just prefix commands with `corepack yarn ...` as above.
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
 

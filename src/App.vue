@@ -30,7 +30,7 @@
 
 <style lang="scss">
 
-  @import './styles/_vars.scss';
+  @use './styles/vars' as *;
 
   * {
     -webkit-font-smoothing: antialiased;

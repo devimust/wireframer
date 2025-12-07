@@ -1,5 +1,5 @@
-@import 'vars';
-@import 'tooltip';
+@use './vars' as *;
+@use './tooltip';
 
 .rotate-90 {
   -webkit-transform: rotate(90deg);

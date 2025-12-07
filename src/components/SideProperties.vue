@@ -179,6 +179,7 @@
 
 <script>
 
+  import debounce from 'lodash.debounce'
   import VueEditable from '../helpers/vue-editable.vue'
   import VueColorPicker from '../helpers/vue-color-picker.vue'
   import html2canvas from 'html2canvas'
@@ -242,11 +243,11 @@
         localStorage.setItem('sidePropertiesState', containerState)
       },
 
-      debounceTextInput: _.debounce(function (e) {
+      debounceTextInput: debounce(function (e) {
         this.$store.dispatch('updateWidgetProperties', this.activeWidget)
       }, 200),
 
-      debounceColorInput: _.debounce(function (e) {
+      debounceColorInput: debounce(function (e) {
         this.$store.dispatch('updateWidgetProperties', this.activeWidget)
       }, 200),
 
@@ -523,7 +524,8 @@
 
 <style lang="scss" scoped>
 
-  @import '../styles/_main.scss';
+  @use '../styles/vars' as *;
+  @use '../styles/main';
 
   .container {
     position: fixed;

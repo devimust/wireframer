@@ -1,6 +1,7 @@
 const path = require('path')
-const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   entry: './src/main.js',
@@ -9,6 +10,7 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'build.js'
   },
+  mode: isProduction ? 'production' : 'development',
   plugins: [
     new VueLoaderPlugin()
   ],
@@ -26,7 +28,14 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                silenceDeprecations: ['legacy-js-api', 'import']
+              }
+            }
+          }
         ],
       },
       {
@@ -34,7 +43,15 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader',
-          'sass-loader?indentedSyntax'
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                silenceDeprecations: ['legacy-js-api', 'import'],
+                indentedSyntax: true
+              }
+            }
+          }
         ],
       },
       {
@@ -48,12 +65,27 @@ module.exports = {
             'scss': [
               'vue-style-loader',
               'css-loader',
-              'sass-loader'
+              {
+                loader: 'sass-loader',
+                options: {
+                  sassOptions: {
+                    silenceDeprecations: ['legacy-js-api', 'import']
+                  }
+                }
+              }
             ],
             'sass': [
               'vue-style-loader',
               'css-loader',
-              'sass-loader?indentedSyntax'
+              {
+                loader: 'sass-loader',
+                options: {
+                  sassOptions: {
+                    silenceDeprecations: ['legacy-js-api', 'import'],
+                    indentedSyntax: true
+                  }
+                }
+              }
             ]
           }
           // other vue-loader options go here
@@ -87,16 +119,20 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    noInfo: true,
-    overlay: true
+    static: {
+      directory: path.join(__dirname, '.'),
+      watch: true
+    },
+    client: {
+      overlay: true
+    },
+    devMiddleware: {
+      publicPath: '/dist/'
+    },
+    hot: true
   },
   performance: {
     hints: false
   },
-  devtool: 'eval-source-map'
-}
-
-if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = 'source-map'
-  module.exports.mode = 'production'
+  devtool: isProduction ? 'source-map' : 'eval-source-map'
 }
