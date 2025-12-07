@@ -36,7 +36,7 @@ Copy `index.html` and the `dist` folder to a webserver.
 
 ## Todo
 
-- [ ] Add more widgets: paragraph, table, navigation, tabs
+- [x] Add more widgets: paragraph, table, navigation, tabs
 - [x] Deselect widget when clicking outside canvas
 - [x] Download/import localstorage json data
 - [ ] Position widgets relative to other widgets (middle, equal size, etc.)
@@ -62,7 +62,7 @@ corepack yarn dev
 
 # build for production with minification
 corepack yarn build
-#or 
+#or
 corepack yarn release
 ```
 
