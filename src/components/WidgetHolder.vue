@@ -10,6 +10,7 @@
         :is="'widget-'+widget.type"
         :class="{selected: activeWidget && widget.id == activeWidget.id}"
         @click.native.stop="setActiveWidget(widget)"
+        @ondragend="handleDragEnd"
       >
       </component>
 
@@ -33,16 +34,43 @@
   import WidgetHR from './widgets/WidgetHR.vue'
   import WidgetHeading from './widgets/WidgetHeading.vue'
   import WidgetLabel from './widgets/WidgetLabel.vue'
+  import WidgetParagraph from './widgets/WidgetParagraph.vue'
   import WidgetImage from './widgets/WidgetImage.vue'
   import WidgetShape from './widgets/WidgetShape.vue'
   import WidgetBrowser from './widgets/WidgetBrowser.vue'
   import WidgetMobile from './widgets/WidgetMobile.vue'
+  import WidgetTable from './widgets/WidgetTable.vue'
+  import WidgetTabs from './widgets/WidgetTabs.vue'
+  import WidgetNavigation from './widgets/WidgetNavigation.vue'
+  import WidgetPagination from './widgets/WidgetPagination.vue'
+  import WidgetContainer from './widgets/WidgetContainer.vue'
+  import WidgetToggle from './widgets/WidgetToggle.vue'
+  import WidgetVSlider from './widgets/WidgetVSlider.vue'
+  import WidgetHSlider from './widgets/WidgetHSlider.vue'
+  import WidgetSubHeading from './widgets/WidgetSubHeading.vue'
+  import WidgetDatePicker from './widgets/WidgetDatePicker.vue'
+  import WidgetCalendar from './widgets/WidgetCalendar.vue'
+  import WidgetSearch from './widgets/WidgetSearch.vue'
+  import WidgetRoundButton from './widgets/WidgetRoundButton.vue'
+  import WidgetButtonBar from './widgets/WidgetButtonBar.vue'
+  import WidgetProgressBar from './widgets/WidgetProgressBar.vue'
+  import WidgetPopover from './widgets/WidgetPopover.vue'
+  import WidgetTooltip from './widgets/WidgetTooltip.vue'
+  import WidgetChartLine from './widgets/WidgetChartLine.vue'
+  import WidgetAlertBox from './widgets/WidgetAlertBox.vue'
+  import WidgetIcon from './widgets/WidgetIcon.vue'
 
   export default {
     methods: {
       setActiveWidget (widget) {
         this.$store.dispatch('setActiveWidget', widget)
       },
+
+      handleDragEnd ({ widget, dx, dy }) {
+        // currently used to keep container drag lifecycle hooks available;
+        // child widgets stay relatively positioned via parent offsets.
+        if (!widget) return
+      }
     },
 
     mounted () {
@@ -153,10 +181,31 @@
       'widget-hr': WidgetHR,
       'widget-heading': WidgetHeading,
       'widget-label': WidgetLabel,
+      'widget-paragraph': WidgetParagraph,
       'widget-image': WidgetImage,
       'widget-shape': WidgetShape,
       'widget-browser': WidgetBrowser,
-      'widget-mobile': WidgetMobile
+      'widget-mobile': WidgetMobile,
+      'widget-table': WidgetTable,
+      'widget-tabs': WidgetTabs,
+      'widget-navigation': WidgetNavigation,
+      'widget-pagination': WidgetPagination,
+      'widget-container': WidgetContainer,
+      'widget-toggle': WidgetToggle,
+      'widget-vslider': WidgetVSlider,
+      'widget-hslider': WidgetHSlider,
+      'widget-subheading': WidgetSubHeading,
+      'widget-datepicker': WidgetDatePicker,
+      'widget-calendar': WidgetCalendar,
+      'widget-search': WidgetSearch,
+      'widget-roundbutton': WidgetRoundButton,
+      'widget-buttonbar': WidgetButtonBar,
+      'widget-progressbar': WidgetProgressBar,
+      'widget-popover': WidgetPopover,
+      'widget-tooltip': WidgetTooltip,
+      'widget-chartline': WidgetChartLine,
+      'widget-alertbox': WidgetAlertBox,
+      'widget-icon': WidgetIcon
     }
   }
 

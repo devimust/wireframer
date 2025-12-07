@@ -23,8 +23,14 @@
           name: 'Black',
           rgb: '000000',
         },{
+          name: 'Deep navy',
+          rgb: '1f2937',
+        },{
           name: 'Green',
           rgb: '7bd148',
+        },{
+          name: 'Mint',
+          rgb: 'b5f5ec',
         },{
           name: 'Bold blue',
           rgb: '5484ed'
@@ -47,6 +53,9 @@
           name: 'Orange',
           rgb: 'ffb878'
         },{
+          name: 'Gold',
+          rgb: 'f59e0b'
+        },{
           name: 'Red',
           rgb: 'ff887c'
         },{
@@ -56,11 +65,23 @@
           name: 'Purple',
           rgb: 'dbadff'
         },{
+          name: 'Magenta',
+          rgb: 'ec4899'
+        },{
+          name: 'Slate',
+          rgb: '94a3b8'
+        },{
           name: 'Gray',
           rgb: 'e1e1e1'
         },{
+          name: 'Cool gray',
+          rgb: 'cbd5e1'
+        },{
           name: 'White',
           rgb: 'ffffff',
+        },{
+          name: 'Reset',
+          rgb: ''
         }]
       }
     },

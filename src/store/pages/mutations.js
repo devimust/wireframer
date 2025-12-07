@@ -170,6 +170,17 @@ export default {
       return
     }
 
+    const deletedWidget = page.widgets[pageWidgetIndex]
+
+    // if a container gets deleted, detach its children
+    if (deletedWidget && deletedWidget.type === 'container') {
+      page.widgets.forEach(item => {
+        if (item.p === deletedWidget.id) {
+          item.p = null
+        }
+      })
+    }
+
     page.widgets.splice(pageWidgetIndex, 1)
 
     state.activeWidget = null

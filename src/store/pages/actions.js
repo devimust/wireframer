@@ -127,7 +127,8 @@ export default {
       f: '',      /* font size if applicable */
       d: [],      /* data related to widget (e.g. lists) if applicable */
       s: '',      /* shape type (e.g. rectangle) if applicable */
-      l: ''       /* image url (e.g. https://url/image.png) if applicable */
+      l: '',      /* image url (e.g. https://url/image.png) if applicable */
+      p: null     /* parent widget id if nested */
     }
 
     // merge payload with default widget properties

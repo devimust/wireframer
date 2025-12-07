@@ -36,6 +36,10 @@
 
         <div v-if="activeWidget" class="widget-properties">
           <h2>properties</h2>
+          <div class="widget-meta inline">
+            <span class="meta-label">type:</span>
+            <span class="meta-value">{{ activeWidget.type }}</span>
+          </div>
 
           <div class="widget-actions clearfix">
             <i class="material-icons float-left" @click="sendWidget('back')">flip_to_back</i>
@@ -136,12 +140,40 @@
             </table>
           </div>
 
+          <!-- table rows -->
+          <div v-if="showTableRows" class="form-group list">
+            <label>table rows</label>
+
+            <i class="material-icons add-item"
+              @click="activeWidget.d.push({n:'Row', c:'Value'})">add_circle</i>
+
+            <table>
+              <tr v-for="(item, index) in activeWidget.d" :key="index">
+                <td width="20"><i class="material-icons">table_rows</i></td>
+                <td><input type="text" class="form-control" v-model="item.n" @input="debounceTextInput"></td>
+                <td><input type="text" class="form-control" v-model="item.c" @input="debounceTextInput"></td>
+                <td width="20" align="right"><i class="material-icons" @click="activeWidget.d.splice(index, 1)">close</i></td>
+              </tr>
+            </table>
+          </div>
+
           <!-- shape -->
           <div v-if="showShape" class="widget-actions-2 form-group">
             <label>shape</label>
             <select v-model="activeWidget.s">
               <option>rectangle</option>
               <option>circle</option>
+            </select>
+          </div>
+
+          <!-- parent container -->
+          <div v-if="showParentSelector" class="form-group">
+            <label>parent container</label>
+            <select class="form-control" :value="activeWidget.p || ''" @change="onParentChange($event)">
+              <option value="">none</option>
+              <option v-for="container in containers" :key="container.id" :value="container.id">
+                Container #{{ container.id }}
+              </option>
             </select>
           </div>
         </div>
@@ -243,6 +275,36 @@
         localStorage.setItem('sidePropertiesState', containerState)
       },
 
+      onParentChange (event) {
+        const val = event.target.value
+        const newParentId = val === '' ? null : parseInt(val)
+        const currentParent = this.containers.find(item => item.id === this.activeWidget.p)
+        const newParent = this.containers.find(item => item.id === newParentId)
+
+        // convert to absolute based on current parent
+        let absoluteX = this.activeWidget.x
+        let absoluteY = this.activeWidget.y
+        if (currentParent) {
+          absoluteX = this.activeWidget.x + currentParent.x
+          absoluteY = this.activeWidget.y + currentParent.y
+        }
+
+        // convert to relative if new parent exists
+        let nextX = absoluteX
+        let nextY = absoluteY
+        if (newParent) {
+          nextX = absoluteX - newParent.x
+          nextY = absoluteY - newParent.y
+        }
+
+        const payload = Object.assign({}, this.activeWidget, {
+          p: newParentId,
+          x: nextX,
+          y: nextY
+        })
+        this.$store.dispatch('updateWidgetProperties', payload)
+      },
+
       debounceTextInput: debounce(function (e) {
         this.$store.dispatch('updateWidgetProperties', this.activeWidget)
       }, 200),
@@ -294,11 +356,11 @@
       },
 
       pickColor (val) {
-        this.activeWidget.c = '#' + val
+        this.activeWidget.c = val ? '#' + val : null
       },
 
       pickBgColor (val) {
-        this.activeWidget.bc = '#' + val
+        this.activeWidget.bc = val ? '#' + val : null
       },
 
       exportCanvasToFile () {
@@ -388,7 +450,7 @@
           return false
         }
 
-        const allowed = ['button', 'dropdown', 'input', 'heading', 'label', 'browser']
+        const allowed = ['button', 'dropdown', 'input', 'heading', 'subheading', 'label', 'browser', 'paragraph', 'search', 'popover', 'tooltip', 'alertbox', 'icon', 'buttonbar', 'roundbutton']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -398,7 +460,7 @@
           return false
         }
 
-        const allowed = ['heading', 'label', 'hr', 'input']
+        const allowed = ['heading', 'subheading', 'label', 'hr', 'input', 'paragraph', 'alertbox', 'tooltip', 'popover', 'icon']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -408,7 +470,7 @@
           return false
         }
 
-        const allowed = ['button', 'label', 'input', 'image', 'shape', 'browser', 'mobile']
+        const allowed = ['button', 'label', 'input', 'image', 'shape', 'browser', 'mobile', 'table', 'tabs', 'navigation', 'paragraph', 'container', 'search', 'buttonbar', 'progressbar', 'popover', 'tooltip', 'alertbox', 'chartline', 'roundbutton']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -418,7 +480,7 @@
           return false
         }
 
-        const allowed = ['button', 'checkbox', 'dropdown', 'input', 'heading', 'label']
+        const allowed = ['button', 'checkbox', 'dropdown', 'input', 'heading', 'label', 'paragraph']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -448,7 +510,7 @@
           return false
         }
 
-        const allowed = ['list']
+        const allowed = ['list', 'tabs', 'navigation', 'pagination', 'buttonbar']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -458,7 +520,7 @@
           return false
         }
 
-        const allowed = ['heading']
+        const allowed = ['heading', 'subheading', 'icon']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -471,6 +533,36 @@
         const allowed = ['shape']
 
         return allowed.includes(this.activeWidget.type)
+      },
+
+      showTableRows () {
+        if (!this.activeWidget) {
+          return false
+        }
+
+        const allowed = ['table']
+
+        return allowed.includes(this.activeWidget.type)
+      },
+
+      showParentSelector () {
+        if (!this.activeWidget) {
+          return false
+        }
+
+        if (this.activeWidget.type === 'container') {
+          return false
+        }
+
+        return this.containers.length > 0
+      },
+
+      containers () {
+        if (!this.activePage || !this.activePage.widgets) {
+          return []
+        }
+
+        return this.activePage.widgets.filter(item => item.type === 'container')
       }
     },
 
@@ -694,6 +786,27 @@
       position: fixed;
       bottom: 5px;
       right: 10px;
+      color: #555;
+      font-size: 10px;
+    }
+
+    .widget-meta {
+      font-size: 11px;
+      color: #ccc;
+      margin-bottom: 8px;
+      .meta-label {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 4px;
+      }
+      .meta-value {
+        color: #fbc832;
+      }
+      &.inline {
+        display: inline-block;
+        margin-left: 6px;
+        vertical-align: middle;
+      }
     }
   }
 
