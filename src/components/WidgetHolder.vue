@@ -164,7 +164,8 @@
 
 <style lang=scss scoped>
 
-  @import '../styles/_main.scss';
+  @use '../styles/vars' as *;
+  @use '../styles/main';
 
   .bg-blocks {
     background-color: $canvas-background-color;

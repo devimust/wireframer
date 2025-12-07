@@ -274,7 +274,8 @@
 
 <style lang="scss" scoped>
 
-  @import '../styles/_main.scss';
+  @use '../styles/vars' as *;
+  @use '../styles/main';
 
   .container {
     position: fixed;
