@@ -25,8 +25,10 @@
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
     font-weight: 600;
     font-family: 'Roboto', sans-serif;
+    text-align: left;
+    box-sizing: border-box;
+    padding: 4px;
   }
 </style>

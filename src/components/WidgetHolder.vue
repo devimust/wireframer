@@ -1,7 +1,7 @@
 <template>
-    <div v-if="activePage" class="widget-holder bg-blocks"
+    <div v-if="activePage" class="widget-holder"
       @click="setActiveWidget(null)"
-      :style="styleDimensions"
+      :style="[styleDimensions, canvasStyle]"
     >
       <component class="widget-resize-drag"
         v-for="(widget, index) in widgets"
@@ -76,10 +76,13 @@
     mounted () {
       const vm = this
 
-      window.addEventListener("keypress", function(e) {
-        switch (e.keyCode) {
-          case 127 : vm.$store.dispatch('deleteWidget')
-          break;
+      window.addEventListener("keydown", function(e) {
+        if (!vm.$store.getters.activeWidget) {
+          return
+        }
+        if (e.key === 'Delete' || e.keyCode === 46 || e.keyCode === 127) {
+          e.preventDefault()
+          vm.$store.dispatch('deleteWidget')
         }
       })
 
@@ -159,6 +162,31 @@
         return page
       },
 
+      canvasAppearance () {
+        return this.$store.getters.canvasAppearance || { mode: 'grid', color: '#cecece' }
+      },
+
+      canvasStyle () {
+        const baseColor = (this.canvasAppearance && this.canvasAppearance.color) || '#cecece'
+        const isSolid = this.canvasAppearance && this.canvasAppearance.mode === 'solid'
+
+        if (isSolid) {
+          return {
+            backgroundColor: baseColor,
+            backgroundImage: 'none'
+          }
+        }
+
+        const gradient = 'linear-gradient(rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px)'
+
+        return {
+          backgroundColor: baseColor,
+          backgroundImage: gradient,
+          backgroundSize: '100px 100px, 100px 100px, 20px 20px, 20px 20px',
+          backgroundPosition: '-2px -2px, -2px -2px, -1px -1px, -1px -1px'
+        }
+      },
+
       activeWidget () {
         const widget = this.$store.getters.activeWidget
 
@@ -215,13 +243,6 @@
 
   @use '../styles/vars' as *;
   @use '../styles/main';
-
-  .bg-blocks {
-    background-color: $canvas-background-color;
-    background-image: linear-gradient(rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(90deg, rgba(255,255,255,.3) 2px, transparent 2px), linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px);
-    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
-  }
 
   .widget-holder {
     position: relative;

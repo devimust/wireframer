@@ -6,7 +6,12 @@ const state = {
 
   activePage: null,
 
-  activeWidget: null
+  activeWidget: null,
+
+  canvasAppearance: {
+    mode: 'grid',
+    color: '#cecece'
+  }
 };
 
 const getters = {
@@ -20,6 +25,10 @@ const getters = {
 
   activeWidget (state) {
     return state.activeWidget
+  },
+
+  canvasAppearance (state) {
+    return state.canvasAppearance
   }
 };
 

@@ -267,6 +267,8 @@
             Object.assign(widget, {
               w: 80,
               h: 36,
+              c: '#34d399',
+              bc: '#e5e7eb',
               d: [{ n: 'on', c: true }]
             });
             break;
@@ -303,11 +305,14 @@
           case 'input':
             Object.assign(widget, {
               w: 180,
-              h: 40,
+              h: 70,
               t: 'Label',
               a: 'left',
               c: '#000000',
-              bc: '#ffffff'
+              bc: '#ffffff',
+              lp: 'top',
+              ss: false,
+              st: 'Helper text'
             });
             break;
           case 'hr':
@@ -325,6 +330,16 @@
               a: 'left',
               f: '28',
               c: '#000000'
+            });
+            break;
+          case 'subheading':
+            Object.assign(widget, {
+              w: 200,
+              h: 50,
+              t: 'Subheading',
+              a: 'left',
+              f: '18',
+              c: '#333333'
             });
             break;
           case 'label':

@@ -34,6 +34,37 @@
           </tr>
         </table>
 
+        <div class="canvas-appearance">
+          <h3>canvas background</h3>
+          <div class="form-group">
+            <label>style</label>
+            <select class="form-control" :value="canvasAppearance.mode" @change="onCanvasModeChange($event.target.value)">
+              <option value="grid">grid</option>
+              <option value="solid">solid color</option>
+            </select>
+          </div>
+
+          <div class="form-group text-color">
+            <label for="canvasColor">background color</label>
+            <input
+              id="canvasColor"
+              type="text"
+              class="form-control"
+              :value="canvasAppearance.color"
+              @input="onCanvasColorInput($event.target.value)"
+              placeholder="#cecece">
+          </div>
+          <div class="form-group color-picker">
+            <vue-color-picker @changed="pickCanvasColor"></vue-color-picker>
+          </div>
+        </div>
+
+        <div v-if="activePage" class="page-actions">
+          <h3>quick inserts</h3>
+          <button class="btn btn-sm btn-secondary btn-block" @click="createFormDemo">add registration form</button>
+          <button class="btn btn-sm btn-secondary btn-block" @click="createLoginForm">add login form</button>
+        </div>
+
         <div v-if="activeWidget" class="widget-properties">
           <h2>properties</h2>
           <div class="widget-meta inline">
@@ -68,6 +99,30 @@
             <label for="inputText1">label text</label>
             <input type="text" class="form-control" id="inputText1" placeholder="label text"
               v-model="activeWidget.t" @input="debounceTextInput">
+          </div>
+
+          <div v-if="showInputLabelPosition" class="form-group">
+            <label for="labelPosition">label position</label>
+            <select id="labelPosition" class="form-control" :value="activeWidget.lp || 'top'" @change="onLabelPositionChange($event.target.value)">
+              <option value="top">top</option>
+              <option value="bottom">bottom</option>
+              <option value="left">left</option>
+              <option value="right">right</option>
+              <option value="none">none</option>
+            </select>
+          </div>
+
+          <div v-if="showSubtextControls" class="form-group checkbox-inline">
+            <label>
+              <input type="checkbox" :checked="!!activeWidget.ss" @change="onSubtextToggle($event)">
+              show subtext
+            </label>
+          </div>
+
+          <div v-if="showSubtextControls && activeWidget.ss" class="form-group">
+            <label for="inputSubtext">subtext</label>
+            <input type="text" id="inputSubtext" class="form-control" placeholder="helper text"
+              v-model="activeWidget.st" @input="debounceTextInput">
           </div>
 
           <!-- color -->
@@ -342,9 +397,12 @@
 
       alignWidget (direction) {
         if (direction == 'center') {
-          const newX = Math.round(this.activePage.w / 2) - Math.round(this.activeWidget.w / 2)
+          const parent = this.containers.find(item => item.id === this.activeWidget.p)
+          const containerWidth = parent ? parent.w : this.activePage.w
 
-          if (newX > 0) {
+          const newX = Math.round(containerWidth / 2) - Math.round(this.activeWidget.w / 2)
+
+          if (newX >= 0) {
             this.activeWidget.x = newX
             this.$store.dispatch('updateWidgetProperties', this.activeWidget)
           }
@@ -355,12 +413,165 @@
         this.$store.dispatch('deleteWidget')
       },
 
+      onCanvasModeChange (mode) {
+        this.$store.dispatch('setCanvasAppearance', { mode })
+      },
+
+      onCanvasColorInput (value) {
+        const cleaned = value && value.trim() ? (value.trim().startsWith('#') ? value.trim() : '#' + value.trim()) : '#cecece'
+        this.$store.dispatch('setCanvasAppearance', { color: cleaned })
+      },
+
+      pickCanvasColor (val) {
+        const color = val ? '#' + val : '#cecece'
+        this.$store.dispatch('setCanvasAppearance', { color })
+      },
+
       pickColor (val) {
         this.activeWidget.c = val ? '#' + val : null
       },
 
       pickBgColor (val) {
         this.activeWidget.bc = val ? '#' + val : null
+      },
+
+      createFormDemo () {
+        if (!this.activePage) return
+
+        // create container
+        this.$store.dispatch('createWidget', {
+          type: 'container',
+          w: 440,
+          h: 560,
+          x: 40,
+          y: 60,
+          bc: '#ffffff'
+        })
+
+        const widgets = this.$store.getters.activePage.widgets
+        const container = [...widgets].reverse().find(item => item.type === 'container')
+        if (!container) return
+
+        const cid = container.id
+        const baseX = 16
+        let cursorY = 16
+
+        const add = (payload) => {
+          this.$store.dispatch('createWidget', Object.assign({
+            p: cid,
+            x: baseX,
+            y: cursorY
+          }, payload))
+          cursorY += payload.h ? payload.h + 18 : 60
+        }
+
+        add({ type: 'heading', w: 360, h: 48, t: 'Registration', f: '26', c: '#111', a: 'left' })
+        add({ type: 'subheading', w: 360, h: 32, t: 'Create your account', f: '16', c: '#333', a: 'left' })
+        add({ type: 'hr', w: 360, h: 20, c: '#e5e7eb' })
+        add({ type: 'input', w: 360, h: 64, t: 'Full name', a: 'left', lp: 'left', ss: true, st: 'Enter your full name', bc: '#fff' })
+        add({ type: 'input', w: 360, h: 64, t: 'Email', a: 'left', lp: 'left', ss: true, st: 'We will never share your email', bc: '#fff' })
+        add({ type: 'input', w: 360, h: 64, t: 'Password', a: 'left', lp: 'left', ss: true, st: '8+ characters', bc: '#fff' })
+        add({ type: 'checkbox', w: 360, h: 32, d: [{ n: 'I agree to the terms', c: false }] })
+
+        // buttons inline
+        const btnY = cursorY + 8
+        this.$store.dispatch('createWidget', {
+          type: 'button',
+          w: 120,
+          h: 40,
+          t: 'Submit',
+          a: 'center',
+          bc: '#ffffff',
+          p: cid,
+          x: baseX,
+          y: btnY
+        })
+        this.$store.dispatch('createWidget', {
+          type: 'button',
+          w: 120,
+          h: 40,
+          t: 'Cancel',
+          a: 'center',
+          bc: '#ffffff',
+          p: cid,
+          x: baseX + 140,
+          y: btnY
+        })
+      },
+
+      createLoginForm () {
+        if (!this.activePage) return
+
+        this.$store.dispatch('createWidget', {
+          type: 'container',
+          w: 420,
+          h: 480,
+          x: 50,
+          y: 80,
+          bc: '#ffffff'
+        })
+
+        const widgets = this.$store.getters.activePage.widgets
+        const container = [...widgets].reverse().find(item => item.type === 'container')
+        if (!container) return
+
+        const cid = container.id
+        const baseX = 16
+        let cursorY = 16
+
+        const add = (payload) => {
+          this.$store.dispatch('createWidget', Object.assign({
+            p: cid,
+            x: baseX,
+            y: cursorY
+          }, payload))
+          cursorY += payload.h ? payload.h + 18 : 60
+        }
+
+        add({ type: 'heading', w: 360, h: 44, t: 'Welcome back', f: '26', c: '#111', a: 'left' })
+        add({ type: 'subheading', w: 360, h: 32, t: 'Sign in to continue', f: '16', c: '#333', a: 'left' })
+        add({ type: 'hr', w: 360, h: 20, c: '#e5e7eb' })
+        add({ type: 'input', w: 360, h: 64, t: 'Email', a: 'left', lp: 'left', ss: true, st: 'Enter your email', bc: '#fff' })
+        add({ type: 'input', w: 360, h: 64, t: 'Password', a: 'left', lp: 'left', ss: true, st: '••••••••', bc: '#fff' })
+        add({ type: 'checkbox', w: 360, h: 32, d: [{ n: 'Remember me', c: false }] })
+
+        const btnY = cursorY + 8
+        this.$store.dispatch('createWidget', {
+          type: 'button',
+          w: 120,
+          h: 40,
+          t: 'Login',
+          a: 'center',
+          bc: '#ffffff',
+          p: cid,
+          x: baseX,
+          y: btnY
+        })
+        this.$store.dispatch('createWidget', {
+          type: 'button',
+          w: 120,
+          h: 40,
+          t: 'Cancel',
+          a: 'center',
+          bc: '#ffffff',
+          p: cid,
+          x: baseX + 140,
+          y: btnY
+        })
+      },
+
+      onLabelPositionChange (val) {
+        const payload = Object.assign({}, this.activeWidget, { lp: val })
+        this.$store.dispatch('updateWidgetProperties', payload)
+      },
+
+      onSubtextToggle (event) {
+        const enabled = !!event.target.checked
+        const payload = Object.assign({}, this.activeWidget, {
+          ss: enabled,
+          st: enabled ? (this.activeWidget.st || 'Helper text') : ''
+        })
+        this.$store.dispatch('updateWidgetProperties', payload)
       },
 
       exportCanvasToFile () {
@@ -435,6 +646,10 @@
         return width
       },
 
+      canvasAppearance () {
+        return this.$store.getters.canvasAppearance
+      },
+
       activeWidget () {
         const widget = this.$store.getters.activeWidget
 
@@ -455,12 +670,20 @@
         return allowed.includes(this.activeWidget.type)
       },
 
+      showInputLabelPosition () {
+        return this.activeWidget && this.activeWidget.type === 'input'
+      },
+
+      showSubtextControls () {
+        return this.activeWidget && this.activeWidget.type === 'input'
+      },
+
       showColor () {
         if (!this.activeWidget) {
           return false
         }
 
-        const allowed = ['heading', 'subheading', 'label', 'hr', 'input', 'paragraph', 'alertbox', 'tooltip', 'popover', 'icon']
+        const allowed = ['heading', 'subheading', 'label', 'hr', 'input', 'paragraph', 'alertbox', 'tooltip', 'popover', 'icon', 'progressbar']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -470,7 +693,7 @@
           return false
         }
 
-        const allowed = ['button', 'label', 'input', 'image', 'shape', 'browser', 'mobile', 'table', 'tabs', 'navigation', 'paragraph', 'container', 'search', 'buttonbar', 'progressbar', 'popover', 'tooltip', 'alertbox', 'chartline', 'roundbutton']
+        const allowed = ['button', 'label', 'input', 'image', 'shape', 'browser', 'mobile', 'table', 'tabs', 'navigation', 'paragraph', 'container', 'search', 'buttonbar', 'progressbar', 'popover', 'tooltip', 'alertbox', 'chartline', 'roundbutton', 'toggle']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -480,7 +703,7 @@
           return false
         }
 
-        const allowed = ['button', 'checkbox', 'dropdown', 'input', 'heading', 'label', 'paragraph']
+        const allowed = ['button', 'checkbox', 'dropdown', 'input', 'heading', 'subheading', 'label', 'paragraph']
 
         return allowed.includes(this.activeWidget.type)
       },
@@ -646,6 +869,14 @@
       position: relative;
     }
 
+    h3 {
+      font-size: 12px;
+      margin: 12px 0 8px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #bfbfbf;
+    }
+
     .add-page {
       cursor: pointer;
       color: $sidebar-icon-color-primary;
@@ -679,6 +910,18 @@
       i {
         cursor: pointer;
         font-size: $small-icon-size;
+      }
+    }
+
+    .page-actions {
+      margin: 10px 0 18px 0;
+      padding: 8px 0 10px 0;
+      border-top: 1px solid #555;
+      border-bottom: 1px solid #555;
+
+      .btn-block {
+        width: 100%;
+        text-align: left;
       }
     }
 

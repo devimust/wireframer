@@ -2,6 +2,20 @@ export default {
 
   loadPagesFromLocalStorage ({commit, state}) {
     var pages = localStorage.getItem('pages')
+    const appearanceRaw = localStorage.getItem('canvasAppearance')
+    let canvasAppearance = {
+      mode: 'grid',
+      color: '#cecece'
+    }
+
+    if (appearanceRaw) {
+      try {
+        const parsed = JSON.parse(appearanceRaw)
+        canvasAppearance = Object.assign(canvasAppearance, parsed || {})
+      } catch (e) {
+        // noop: fall back to defaults
+      }
+    }
 
     // create a new page in state when app gets hard-refreshed if nothing
     // exists (for a better experience)
@@ -29,6 +43,8 @@ export default {
     }
 
     const page = state.pages.find(item => item.id == activePageId)
+
+    commit('SET_CANVAS_APPEARANCE_MUTATION', canvasAppearance)
 
     if (!page) {
       return
@@ -143,6 +159,10 @@ export default {
 
   setActiveWidget ({commit}, payload) {
     commit('SET_PAGE_ACTIVE_WIDGET_MUTATION', payload)
+  },
+
+  setCanvasAppearance ({commit}, payload) {
+    commit('SET_CANVAS_APPEARANCE_MUTATION', payload)
   },
 
   updateWidgetProperties ({commit}, payload) {

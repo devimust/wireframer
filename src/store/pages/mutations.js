@@ -153,6 +153,15 @@ export default {
     localStorage.setItem('pages', JSON.stringify(state.pages))
   },
 
+  SET_CANVAS_APPEARANCE_MUTATION (state, payload) {
+    if (!payload) {
+      return
+    }
+
+    state.canvasAppearance = Object.assign({}, state.canvasAppearance, payload)
+    localStorage.setItem('canvasAppearance', JSON.stringify(state.canvasAppearance))
+  },
+
   DELETE_PAGE_WIDGET_MUTATION (state) {
     if (!state.activePage || !state.activeWidget) {
       return

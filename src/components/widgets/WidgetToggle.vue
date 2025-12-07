@@ -4,8 +4,11 @@
     :minw="60"
     :minh="30"
   >
-    <div v-if="widget" class="toggle" :class="{ on: widget.d && widget.d[0] && widget.d[0].c }">
-      <div class="thumb"></div>
+    <div
+      v-if="widget"
+      class="toggle"
+      :style="toggleStyle">
+      <div class="thumb" :style="thumbStyle"></div>
     </div>
   </vue-interactjs>
 </template>
@@ -15,7 +18,32 @@
 
   export default {
     props: ['widget'],
-    components: { 'vue-interactjs': VueInteractjs }
+    components: { 'vue-interactjs': VueInteractjs },
+
+    computed: {
+      isOn () {
+        return !!(this.widget && this.widget.d && this.widget.d[0] && this.widget.d[0].c)
+      },
+      toggleStyle () {
+        const onColor = (this.widget && this.widget.c) || '#34d399'
+        const offColor = (this.widget && this.widget.bc) || '#e5e7eb'
+        const bg = this.isOn ? onColor : offColor
+        const border = this.isOn ? onColor : '#d1d5db'
+        return {
+          background: bg,
+          borderColor: border
+        }
+      },
+      thumbStyle () {
+        const offset = 3
+        const thumbWidth = 26
+        const left = this.isOn ? `calc(100% - ${thumbWidth + offset + 1}px)` : `${offset}px`
+        return {
+          left,
+          background: '#fff'
+        }
+      }
+    }
   }
 </script>
 
@@ -39,11 +67,6 @@
       background: #fff;
       box-shadow: 0 1px 3px rgba(0,0,0,0.25);
       transition: transform 0.2s ease;
-    }
-    &.on {
-      background: #34d399;
-      border-color: #10b981;
-      .thumb { transform: translateX(28px); }
     }
   }
 </style>

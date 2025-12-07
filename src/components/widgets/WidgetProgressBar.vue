@@ -6,7 +6,7 @@
   >
     <div v-if="widget" class="progress" :style="{ backgroundColor: widget.bc || '#f1f5f9' }">
       <div class="fill" :style="{ width: (widget.f || 40) + '%'}"></div>
-      <span class="label">{{ widget.f || 40 }}%</span>
+      <span class="label" :style="{ color: widget.c || '#0f172a' }">{{ widget.f || 40 }}%</span>
     </div>
   </vue-interactjs>
 </template>
