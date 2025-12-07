@@ -1,8 +1,8 @@
 <template>
   <div
     :style="styleDimensions(widget)"
-    :data-x="widget.x"
-    :data-y="widget.y"
+    :data-x="absoluteX"
+    :data-y="absoluteY"
     :data-w="widget.w"
     :data-h="widget.h"
   >
@@ -77,10 +77,16 @@
                 x = (parseFloat(target.getAttribute('data-x')) || 0),
                 y = (parseFloat(target.getAttribute('data-y')) || 0);
 
-            vm.widget.y = y
-            vm.widget.x = x
+            const parentOffsetX = vm.parentOffset.x
+            const parentOffsetY = vm.parentOffset.y
+            const dx = x - (vm.widget.x + parentOffsetX)
+            const dy = y - (vm.widget.y + parentOffsetY)
+
+            vm.widget.y = y - parentOffsetY
+            vm.widget.x = x - parentOffsetX
 
             vm.$store.dispatch('updateWidgetDimensions', vm.widget)
+            vm.$emit('ondragend', { widget: vm.widget, dx, dy })
           },
           restrict: {
             restriction: 'parent',
@@ -133,8 +139,8 @@
               w = (parseFloat(target.getAttribute('data-w')) || 0),
               h = (parseFloat(target.getAttribute('data-h')) || 0);
 
-          vm.widget.y = y
-          vm.widget.x = x
+          vm.widget.y = y - vm.parentOffset.y
+          vm.widget.x = x - vm.parentOffset.x
           vm.widget.w = w
           vm.widget.h = h
 
@@ -144,15 +150,45 @@
 
     methods: {
       styleDimensions (widget) {
+        const offsetX = this.parentOffset.x
+        const offsetY = this.parentOffset.y
         const obj = {
           left: 0,
           top: 0,
           width: widget.w + 'px',
           height: widget.h + 'px',
-          transform: 'translate(' + widget.x + 'px, ' + widget.y + 'px)',
+          transform: 'translate(' + (widget.x + offsetX) + 'px, ' + (widget.y + offsetY) + 'px)',
           zIndex: widget.z
         }
         return obj
+      }
+    },
+
+    computed: {
+      parentOffset () {
+        const offset = { x: 0, y: 0 }
+        if (this.parent) {
+          offset.x = this.parent.x || 0
+          offset.y = this.parent.y || 0
+          return offset
+        }
+
+        if (this.widget && this.widget.p && this.$store && this.$store.getters.activePage) {
+          const parent = this.$store.getters.activePage.widgets.find(item => item.id === this.widget.p)
+          if (parent) {
+            offset.x = parent.x || 0
+            offset.y = parent.y || 0
+          }
+        }
+        return offset
+      },
+
+      absoluteX () {
+        return (this.widget ? this.widget.x : 0) + this.parentOffset.x
+      },
+
+      absoluteY () {
+        return (this.widget ? this.widget.y : 0) + this.parentOffset.y
       }
     }
   }

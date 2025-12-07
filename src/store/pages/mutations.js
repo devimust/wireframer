@@ -153,6 +153,15 @@ export default {
     localStorage.setItem('pages', JSON.stringify(state.pages))
   },
 
+  SET_CANVAS_APPEARANCE_MUTATION (state, payload) {
+    if (!payload) {
+      return
+    }
+
+    state.canvasAppearance = Object.assign({}, state.canvasAppearance, payload)
+    localStorage.setItem('canvasAppearance', JSON.stringify(state.canvasAppearance))
+  },
+
   DELETE_PAGE_WIDGET_MUTATION (state) {
     if (!state.activePage || !state.activeWidget) {
       return
@@ -168,6 +177,17 @@ export default {
 
     if (pageWidgetIndex == -1) {
       return
+    }
+
+    const deletedWidget = page.widgets[pageWidgetIndex]
+
+    // if a container gets deleted, detach its children
+    if (deletedWidget && deletedWidget.type === 'container') {
+      page.widgets.forEach(item => {
+        if (item.p === deletedWidget.id) {
+          item.p = null
+        }
+      })
     }
 
     page.widgets.splice(pageWidgetIndex, 1)
